@@ -3,224 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Ordering App</title>
+    <title>Food Ordering System</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 20px;
         }
-
-        header {
-            background-color: #f8f8f8;
-            padding: 20px;
-            text-align: center;
-        }
-
-        header h1 {
-            margin: 0;
-        }
-
-        #search {
-            margin: 10px 0;
-            padding: 10px;
-            width: 80%;
-        }
-
-        button {
-            padding: 10px;
-            background-color: #ff9800;
-            border: none;
-            color: white;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #e68900;
-        }
-
-        #filters {
-            padding: 20px;
-            background-color: #f1f1f1;
-        }
-
-        #products {
+        .food-item {
             display: flex;
-            flex-wrap: wrap;
-            padding: 20px;
+            align-items: center;
+            margin-bottom: 20px;
         }
-
-        .product {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 10px;
-            padding: 10px;
-            width: calc(33% - 40px);
-            box-sizing: border-box;
+        .food-item img {
+            width: 150px;
+            height: 150px;
+            margin-right: 20px;
         }
-
-        .product img {
-            max-width: 100%;
-            height: auto;
-        }
-
-        .product h3 {
-            margin: 0;
-        }
-
-        #orderDetails, #confirmation {
-            padding: 20px;
-            background-color: #f1f1f1;
-            margin-top: 20px;
-        }
-
-        #orderDetails input {
-            margin-bottom: 10px;
-            padding: 10px;
-            width: 100%;
-        }
-
-        #confirmation {
+        .quantity {
+            display: inline-block;
+            width: 40px;
             text-align: center;
+        }
+        .btn {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Food Ordering App</h1>
-        <input type="text" id="search" placeholder="Search for food...">
-        <button id="cart">Cart (0)</button>
-    </header>
-    <main>
-        <section id="filters">
-            <h2>Filter Options</h2>
-            <label for="category">Category:</label>
-            <select id="category">
-                <option value="all">All</option>
-                <option value="burger">Burger</option>
-                <option value="sushi">Sushi</option>
-            </select>
-            <label for="price">Price:</label>
-            <input type="range" id="price" min="0" max="100" step="1" value="100">
-            <span id="priceValue">100</span>
-        </section>
-        <section id="products">
-            <!-- Product items will be dynamically inserted here -->
-        </section>
-        <section id="orderDetails" style="display: none;">
-            <h2>Order Details</h2>
-            <p id="selectedFood">Selected Food: </p>
-            <label for="name">Name:</label>
-            <input type="text" id="name" placeholder="Enter your name">
-            <label for="rollNumber">College Roll Number:</label>
-            <input type="text" id="rollNumber" placeholder="Enter your roll number">
-            <label for="department">Department:</label>
-            <input type="text" id="department" placeholder="Enter your department">
-            <button id="submitOrder">Submit Order</button>
-        </section>
-        <section id="confirmation" style="display: none;">
-            <h2>Order Confirmation</h2>
-            <p id="confirmationMessage"></p>
-        </section>
-    </main>
+
+    <h1>Order Your Food</h1>
+
+    <div class="food-item" data-food="Burger">
+        <img src="images/burger.jpg" alt="Burger">
+        <span>Burger</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
+    </div>
+
+    <div class="food-item" data-food="Chicken Roll">
+        <img src="images/chickenroll.jpg" alt="Chicken Roll">
+        <span>Chicken Roll</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
+    </div>
+
+    <div class="food-item" data-food="Chowmin">
+        <img src="images/chowmin.jpg" alt="Chowmin">
+        <span>Chowmin</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
+    </div>
+
+    <div class="food-item" data-food="Momo">
+        <img src="images/momo.jpg" alt="Momo">
+        <span>Momo</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
+    </div>
+
+    <h2>Enter Your Details</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name"><br><br>
+    
+    <label for="roll_number">College Roll Number:</label>
+    <input type="text" id="roll_number"><br><br>
+    
+    <label for="department">Department:</label>
+    <input type="text" id="department"><br><br>
+
+    <button class="btn" onclick="submitOrder()">Submit Order</button>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const products = [
-                { id: 1, name: 'Burger', category: 'burger', price: 8.99, image: 'images/burger.jpeg' },
-                { id: 2, name: 'Chicken Roll', category: 'sushi', price: 10.99, image: 'images/chickenroll.jpg' },
-                { id: 3, name: 'Chowmin', category: 'sushi', price: 9.99, image: 'images/chowmin.jpg' },
-                { id: 4, name: 'Momos', category: 'sushi', price: 7.99, image: 'images/momo.jpg' }
-            ];
+        function increaseQuantity(button) {
+            const quantitySpan = button.nextElementSibling;
+            let quantity = parseInt(quantitySpan.textContent);
+            quantity += 1;
+            quantitySpan.textContent = quantity;
+        }
 
-            const productsContainer = document.getElementById('products');
-            const categoryFilter = document.getElementById('category');
-            const priceFilter = document.getElementById('price');
-            const priceValue = document.getElementById('priceValue');
-            const orderDetailsSection = document.getElementById('orderDetails');
-            const confirmationSection = document.getElementById('confirmation');
-            const selectedFoodElement = document.getElementById('selectedFood');
+        function submitOrder() {
+            const foodItems = document.querySelectorAll('.food-item');
+            const name = document.getElementById('name').value;
+            const rollNumber = document.getElementById('roll_number').value;
+            const department = document.getElementById('department').value;
+            
+            foodItems.forEach(item => {
+                const foodName = item.getAttribute('data-food');
+                const quantity = parseInt(item.querySelector('.quantity').textContent);
 
-            let selectedProduct = null;
-            let quantities = {};
-
-            function renderProducts() {
-                productsContainer.innerHTML = '';
-                const selectedCategory = categoryFilter.value;
-                const maxPrice = priceFilter.value;
-
-                products.forEach(product => {
-                    if ((selectedCategory === 'all' || product.category === selectedCategory) && product.price <= maxPrice) {
-                        const productElement = document.createElement('div');
-                        productElement.className = 'product';
-                        productElement.innerHTML = `
-                            <img src="${product.image}" alt="${product.name}">
-                            <h3>${product.name}</h3>
-                            <p>$${product.price.toFixed(2)}</p>
-                            <button onclick="selectProduct(${product.id})">Select</button>
-                            <div>
-                                <button onclick="updateQuantity(${product.id}, -1)">-</button>
-                                <span id="quantity-${product.id}">0</span>
-                                <button onclick="updateQuantity(${product.id}, 1)">+</button>
-                            </div>
-                        `;
-                        productsContainer.appendChild(productElement);
-                    }
-                });
-            }
-
-            function selectProduct(productId) {
-                selectedProduct = products.find(p => p.id === productId);
-                selectedFoodElement.textContent = `Selected Food: ${selectedProduct.name}`;
-                orderDetailsSection.style.display = 'block';
-                confirmationSection.style.display = 'none';
-            }
-
-            function updateQuantity(productId, delta) {
-                if (!quantities[productId]) quantities[productId] = 0;
-                quantities[productId] += delta;
-                if (quantities[productId] < 0) quantities[productId] = 0;
-
-                document.getElementById(`quantity-${productId}`).textContent = quantities[productId];
-            }
-
-            function submitOrder() {
-                const name = document.getElementById('name').value;
-                const rollNumber = document.getElementById('rollNumber').value;
-                const department = document.getElementById('department').value;
-
-                if (!selectedProduct || !name || !rollNumber || !department) {
-                    alert('Please fill in all fields.');
-                    return;
+                if (quantity > 0) {
+                    fetch('/submit_order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            food_item: foodName,
+                            name: name,
+                            roll_number: rollNumber,
+                            department: department,
+                            quantity: quantity
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);  // Show confirmation message to the client
+                    });
                 }
-
-                const orderMessage = `${selectedProduct.name} is ordered from ${name}, ${rollNumber} of ${department}.`;
-                alert(orderMessage);
-
-                // Simulate sending data to server
-                console.log('Sending order to server:', {
-                    food: selectedProduct.name,
-                    name,
-                    rollNumber,
-                    department,
-                    quantity: quantities[selectedProduct.id] || 1
-                });
-
-                // Update the client and server messages
-                document.getElementById('confirmationMessage').textContent = orderMessage;
-                confirmationSection.style.display = 'block';
-                orderDetailsSection.style.display = 'none';
-            }
-
-            document.getElementById('submitOrder').addEventListener('click', submitOrder);
-
-            categoryFilter.addEventListener('change', renderProducts);
-            priceFilter.addEventListener('input', () => {
-                priceValue.textContent = priceFilter.value;
-                renderProducts();
             });
-
-            renderProducts(); // Initial render
-        });
+        }
     </script>
+
 </body>
 </html>
