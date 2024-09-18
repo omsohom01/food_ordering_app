@@ -27,4 +27,7 @@ def submit_order():
     return jsonify({"message": response_message})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    # Ensure the app listens on the port specified by Render
+    import os
+    port = int(os.getenv('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
