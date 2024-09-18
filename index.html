@@ -1,1 +1,35 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Ordering App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Food Ordering App</h1>
+        <input type="text" id="search" placeholder="Search for food...">
+        <button id="cart">Cart (0)</button>
+    </header>
+    <main>
+        <section id="filters">
+            <h2>Filter Options</h2>
+            <label for="category">Category:</label>
+            <select id="category">
+                <option value="all">All</option>
+                <option value="pizza">Pizza</option>
+                <option value="burger">Burger</option>
+                <option value="sushi">Sushi</option>
+            </select>
+            <label for="price">Price:</label>
+            <input type="range" id="price" min="0" max="100" step="1" value="100">
+            <span id="priceValue">100</span>
+        </section>
+        <section id="products">
+            <!-- Product items will be dynamically inserted here -->
+        </section>
+    </main>
+    <script src="scripts.js"></script>
+</body>
+</html>
