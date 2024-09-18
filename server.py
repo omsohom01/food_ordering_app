@@ -1,4 +1,4 @@
-from flask import Flask, request, send_from_directory, jsonify
+from flask import Flask, send_from_directory, jsonify, request
 
 app = Flask(__name__)
 
@@ -7,9 +7,9 @@ app = Flask(__name__)
 def index():
     return send_from_directory('.', 'index.html')
 
-# Serve images from the 'images' folder
-@app.route('/images/<path:filename>')
-def serve_images(filename):
+# Serve static images from the 'images' folder
+@app.route('/images/<filename>')
+def serve_image(filename):
     return send_from_directory('images', filename)
 
 # Endpoint to handle order submissions
@@ -23,8 +23,7 @@ def submit_order():
     quantity = data['quantity']
 
     response_message = f"{quantity} {food_item}(s) ordered by {name}, Roll No: {roll_number}, Department: {department}."
-    
-    print(response_message)  # This simulates a server-side log of the order
+    print(response_message)  # Server logs the order
     return jsonify({"message": response_message})
 
 if __name__ == '__main__':
