@@ -22,6 +22,15 @@ def submit_order():
     order_summary = data['order_summary']
     total_bill = data['total_bill']
 
+    # Print the submitted details to the console
+    print(f"Received Order Details:")
+    print(f"Name: {name}")
+    print(f"Roll Number: {roll_number}")
+    print(f"Department: {department}")
+    print(f"Order Summary: {order_summary}")
+    print(f"Total Bill: Rs {total_bill}")
+
+    # Response message to be sent back to the client
     response_message = (
         f"Order Summary:<br>{order_summary}<br>"
         f"Total Bill: Rs {total_bill}<br>"
@@ -29,7 +38,7 @@ def submit_order():
         f"Roll Number: {roll_number}<br>"
         f"Department: {department}"
     )
-    print(response_message)  # Server logs the order
+
     return jsonify({"message": response_message})
 
 if __name__ == '__main__':
