@@ -31,7 +31,7 @@
             border: none;
             cursor: pointer;
         }
-        .order-summary {
+        .details {
             margin-top: 20px;
         }
     </style>
@@ -40,28 +40,28 @@
 
     <h1>Order Your Food</h1>
 
-    <div class="food-item" data-food="Burger" data-price="50">
-        <img src="images/burger.jpg" alt="Burger">
+    <div class="food-item" data-food="Burger">
+        <img src="images/burger.jpeg" alt="Burger">
         <span>Burger</span>
         <button onclick="increaseQuantity(this)">+</button>
         <span class="quantity">0</span>
     </div>
 
-    <div class="food-item" data-food="Chicken Roll" data-price="60">
+    <div class="food-item" data-food="Chicken Roll">
         <img src="images/chickenroll.jpg" alt="Chicken Roll">
         <span>Chicken Roll</span>
         <button onclick="increaseQuantity(this)">+</button>
         <span class="quantity">0</span>
     </div>
 
-    <div class="food-item" data-food="Chowmin" data-price="70">
+    <div class="food-item" data-food="Chowmin">
         <img src="images/chowmin.jpg" alt="Chowmin">
         <span>Chowmin</span>
         <button onclick="increaseQuantity(this)">+</button>
         <span class="quantity">0</span>
     </div>
 
-    <div class="food-item" data-food="Momo" data-price="40">
+    <div class="food-item" data-food="Momo">
         <img src="images/momo.jpg" alt="Momo">
         <span>Momo</span>
         <button onclick="increaseQuantity(this)">+</button>
@@ -70,50 +70,31 @@
 
     <h2>Enter Your Details</h2>
     <label for="name">Name:</label>
-    <input type="text" id="name" required><br><br>
+    <input type="text" id="name"><br><br>
     
     <label for="roll_number">College Roll Number:</label>
-    <input type="text" id="roll_number" required><br><br>
+    <input type="text" id="roll_number"><br><br>
     
     <label for="department">Department:</label>
-    <input type="text" id="department" required><br><br>
+    <input type="text" id="department"><br><br>
 
     <button class="btn" onclick="submitOrder()">Submit Order</button>
 
-    <div class="order-summary" id="order-summary">
-        <h2>Order Summary</h2>
-        <p id="order-items"></p>
-        <p id="total-amount">Total Amount: $0</p>
-    </div>
+    <div id="order-details" class="details"></div>
 
     <script>
+        const prices = {
+            "Burger": 50,
+            "Chicken Roll": 65,
+            "Chowmin": 55,
+            "Momo": 45
+        };
+
         function increaseQuantity(button) {
             const quantitySpan = button.nextElementSibling;
             let quantity = parseInt(quantitySpan.textContent);
             quantity += 1;
             quantitySpan.textContent = quantity;
-            updateOrderSummary();
-        }
-
-        function updateOrderSummary() {
-            const foodItems = document.querySelectorAll('.food-item');
-            let orderItemsHtml = '';
-            let totalAmount = 0;
-
-            foodItems.forEach(item => {
-                const foodName = item.getAttribute('data-food');
-                const price = parseInt(item.getAttribute('data-price'));
-                const quantity = parseInt(item.querySelector('.quantity').textContent);
-
-                if (quantity > 0) {
-                    const itemTotal = price * quantity;
-                    orderItemsHtml += `${foodName}: ${quantity} x $${price} = $${itemTotal}<br>`;
-                    totalAmount += itemTotal;
-                }
-            });
-
-            document.getElementById('order-items').innerHTML = orderItemsHtml;
-            document.getElementById('total-amount').textContent = `Total Amount: $${totalAmount}`;
         }
 
         function submitOrder() {
@@ -122,29 +103,36 @@
             const rollNumber = document.getElementById('roll_number').value;
             const department = document.getElementById('department').value;
             
+            let totalBill = 0;
+            let orderDetails = "";
+
             foodItems.forEach(item => {
                 const foodName = item.getAttribute('data-food');
                 const quantity = parseInt(item.querySelector('.quantity').textContent);
 
                 if (quantity > 0) {
-                    fetch('/submit_order', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            food_item: foodName,
-                            name: name,
-                            roll_number: rollNumber,
-                            department: department,
-                            quantity: quantity
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        alert(data.message);  // Show confirmation message to the client
-                    });
+                    totalBill += prices[foodName] * quantity;
+                    orderDetails += `${quantity} ${foodName}(s) ordered<br>`;
                 }
+            });
+
+            orderDetails += `<br><strong>Your bill is: ${totalBill} rupees/-</strong><br>`;
+
+            fetch('/submit_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    roll_number: rollNumber,
+                    department: department,
+                    order_details: orderDetails
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('order-details').innerHTML = data.message;
             });
         }
     </script>
