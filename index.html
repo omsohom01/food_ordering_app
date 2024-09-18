@@ -143,7 +143,24 @@
                 }
             });
 
-            displayOrderDetails(orderSummary, name, rollNumber, department, totalPrice);
+            // Send order details to the server
+            fetch('/submit_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: name,
+                    roll_number: rollNumber,
+                    department: department,
+                    order_summary: orderSummary,
+                    total_price: totalPrice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayOrderDetails(data.order_summary, data.name, data.roll_number, data.department, data.total_price);
+            });
         }
 
         function displayOrderDetails(summary, name, rollNumber, department, totalPrice) {
@@ -154,7 +171,7 @@
 
             document.getElementById('submitted-details').classList.remove('hidden');
             document.getElementById('order-summary').innerHTML = `<strong>Order Summary:</strong><br>${summary}`;
-            document.getElementById('user-details').innerHTML = ` 
+            document.getElementById('user-details').innerHTML = `
                 <strong>Name:</strong> ${name}<br>
                 <strong>Roll Number:</strong> ${rollNumber}<br>
                 <strong>Department:</strong> ${department}<br>`;
