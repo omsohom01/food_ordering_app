@@ -1,35 +1,36 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, send_from_directory, jsonify, request
 
 app = Flask(__name__)
 
-# Serve the HTML file from the root directory
+# Serve index.html from the root directory
 @app.route('/')
 def index():
     return send_from_directory('.', 'index.html')
 
-# Handle the POST request for order submission
+# Serve static images from the 'images' folder
+@app.route('/images/<filename>')
+def serve_image(filename):
+    return send_from_directory('images', filename)
+
+# Endpoint to handle order submissions
 @app.route('/submit_order', methods=['POST'])
 def submit_order():
     data = request.json
-    name = data.get('name')
-    roll_number = data.get('roll_number')
-    department = data.get('department')
-    order_summary = data.get('order_summary')
-    total_price = data.get('total_price')
-    
-    # Log the order details
-    print(f"Order received from {name} ({roll_number}), Department: {department}")
-    print(f"Order Details: {order_summary}")
-    print(f"Total Price: {total_price}")
+    name = data['name']
+    roll_number = data['roll_number']
+    department = data['department']
+    order_summary = data['order_summary']
+    total_bill = data['total_bill']
 
-    # Return the details as JSON
-    return jsonify({
-        'order_summary': order_summary,
-        'name': name,
-        'roll_number': roll_number,
-        'department': department,
-        'total_price': total_price
-    })
+    response_message = (
+        f"Order Summary:<br>{order_summary}<br>"
+        f"Total Bill: Rs {total_bill}<br>"
+        f"Customer Name: {name}<br>"
+        f"Roll Number: {roll_number}<br>"
+        f"Department: {department}"
+    )
+    print(response_message)  # Server logs the order
+    return jsonify({"message": response_message})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000, debug=True)
