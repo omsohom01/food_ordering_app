@@ -3,181 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Ordering System</title>
+    <title>Food Ordering Application</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .main-content {
-            width: 75%;
-        }
-        .sidebar {
-            width: 20%;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             text-align: center;
         }
-        .food-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .food-item img {
-            width: 150px;
-            height: 150px;
-            margin-right: 20px;
-        }
-        .quantity {
-            display: inline-block;
-            width: 40px;
-            text-align: center;
-        }
-        .btn {
-            padding: 10px 15px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
+        .container {
+            width: 80%;
+            margin: auto;
         }
         .hidden {
             display: none;
         }
-        #submitted-details {
+        .img-container {
             margin-top: 20px;
         }
-        #food-image {
-            margin-top: 20px;
-        }
-        .sidebar img {
-            max-width: 100%;
+        .img-container img {
+            width: 200px;
             height: auto;
-            margin-bottom: 10px;
+            margin: 10px;
+        }
+        .order-summary {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-
-    <div class="main-content">
-        <h1>Order Your Food</h1>
-
-        <div class="food-item" data-food="Burger" data-price="50">
-            <img src="images/burger.jpeg" alt="Burger">
-            <span>Burger</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <div class="food-item" data-food="Chicken Roll" data-price="65">
-            <img src="images/chickenroll.jpg" alt="Chicken Roll">
-            <span>Chicken Roll</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <div class="food-item" data-food="Chowmin" data-price="55">
-            <img src="images/chowmin.jpg" alt="Chowmin">
-            <span>Chowmin</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <div class="food-item" data-food="Momo" data-price="45">
-            <img src="images/momo.jpg" alt="Momo">
-            <span>Momo</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <h2>Enter Your Details</h2>
-        <label for="name">Name:</label>
-        <input type="text" id="name"><br><br>
+    <div class="container">
+        <h1>Food Ordering Application</h1>
         
-        <label for="roll_number">College Roll Number:</label>
-        <input type="text" id="roll_number"><br><br>
-        
-        <label for="department">Department:</label>
-        <input type="text" id="department"><br><br>
-
-        <button class="btn" onclick="submitOrder()">Submit Order</button>
-
-        <div id="submitted-details" class="hidden">
-            <h2>Order Details</h2>
-            <p id="order-summary"></p>
-            <p id="user-details"></p>
-            <p id="bill"></p>
-            <img id="food-image" src="images/food.jpg" alt="Food">
+        <!-- Food Selection Section -->
+        <div id="food-selection">
+            <h2>Select Your Food Items</h2>
+            <button onclick="showOrderForm()">Start Ordering</button>
         </div>
-    </div>
 
-    <div class="sidebar">
-        <img src="images/rcciit.jpg" alt="RCCIIT">
-        <img src="images/canteen.jpg" alt="Canteen">
+        <!-- Order Form Section -->
+        <div id="order-form" class="hidden">
+            <h2>Order Form</h2>
+            <div>
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="text" id="roll_number" placeholder="Your Roll Number" required>
+                <input type="text" id="department" placeholder="Your Department" required>
+            </div>
+            <div>
+                <label>
+                    <input type="checkbox" id="burger" data-price="50"> Burger - $50
+                </label>
+                <label>
+                    <input type="checkbox" id="chickenroll" data-price="70"> Chicken Roll - $70
+                </label>
+                <label>
+                    <input type="checkbox" id="chowmin" data-price="60"> Chowmin - $60
+                </label>
+                <label>
+                    <input type="checkbox" id="momo" data-price="40"> Momo - $40
+                </label>
+            </div>
+            <button onclick="submitOrder()">Submit Order</button>
+        </div>
+
+        <!-- Order Summary Section -->
+        <div id="order-summary" class="hidden">
+            <h2>Order Summary</h2>
+            <div id="summary-details"></div>
+            <div class="order-summary">
+                <h3>Order Bill</h3>
+                <p id="total-price"></p>
+            </div>
+            <button onclick="viewOrderDetails()">View Submitted Details</button>
+        </div>
+
+        <!-- Images -->
+        <div class="img-container">
+            <img src="images/rcciit.jpg" alt="RCCIIT">
+            <img src="images/canteen.jpg" alt="Canteen">
+            <img src="images/food.jpg" alt="Food">
+        </div>
     </div>
 
     <script>
-        function increaseQuantity(button) {
-            const quantitySpan = button.nextElementSibling;
-            let quantity = parseInt(quantitySpan.textContent);
-            quantity += 1;
-            quantitySpan.textContent = quantity;
+        function showOrderForm() {
+            document.getElementById('food-selection').classList.add('hidden');
+            document.getElementById('order-form').classList.remove('hidden');
         }
 
         function submitOrder() {
-            const foodItems = document.querySelectorAll('.food-item');
             const name = document.getElementById('name').value;
             const rollNumber = document.getElementById('roll_number').value;
             const department = document.getElementById('department').value;
-            
+
+            const items = document.querySelectorAll('#order-form input[type=checkbox]');
             let orderSummary = '';
             let totalPrice = 0;
-            
-            foodItems.forEach(item => {
-                const foodName = item.getAttribute('data-food');
-                const price = parseInt(item.getAttribute('data-price'));
-                const quantity = parseInt(item.querySelector('.quantity').textContent);
 
-                if (quantity > 0) {
-                    totalPrice += price * quantity;
-                    orderSummary += `${quantity} x ${foodName} (₹${price} each)<br>`;
+            items.forEach(item => {
+                if (item.checked) {
+                    orderSummary += `${item.id.charAt(0).toUpperCase() + item.id.slice(1)} - $${item.dataset.price}<br>`;
+                    totalPrice += parseInt(item.dataset.price);
                 }
             });
 
-            // Send order details to the server
+            const data = {
+                name: name,
+                roll_number: rollNumber,
+                department: department,
+                order_summary: orderSummary,
+                total_price: totalPrice
+            };
+
             fetch('/submit_order', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    name: name,
-                    roll_number: rollNumber,
-                    department: department,
-                    order_summary: orderSummary,
-                    total_price: totalPrice
-                })
+                body: JSON.stringify(data)
             })
             .then(response => response.json())
-            .then(data => {
-                displayOrderDetails(data.order_summary, data.name, data.roll_number, data.department, data.total_price);
+            .then(result => {
+                document.getElementById('order-form').classList.add('hidden');
+                document.getElementById('order-summary').classList.remove('hidden');
+                document.getElementById('summary-details').innerHTML = result.order_summary;
+                document.getElementById('total-price').innerText = `Total Price: $${result.total_price}`;
             });
         }
 
-        function displayOrderDetails(summary, name, rollNumber, department, totalPrice) {
-            document.querySelectorAll('.food-item').forEach(item => item.classList.add('hidden'));
-            document.querySelector('h2').classList.add('hidden');
-            document.querySelectorAll('input').forEach(input => input.classList.add('hidden'));
-            document.querySelector('.btn').classList.add('hidden');
-
-            document.getElementById('submitted-details').classList.remove('hidden');
-            document.getElementById('order-summary').innerHTML = `<strong>Order Summary:</strong><br>${summary}`;
-            document.getElementById('user-details').innerHTML = `
-                <strong>Name:</strong> ${name}<br>
-                <strong>Roll Number:</strong> ${rollNumber}<br>
-                <strong>Department:</strong> ${department}<br>`;
-            document.getElementById('bill').innerHTML = `<strong>Total Bill:</strong> ₹${totalPrice}/-`;
+        function viewOrderDetails() {
+            window.location.href = '/view_order_details'; // Redirect to a route that shows the submitted details
         }
     </script>
-
 </body>
 </html>
