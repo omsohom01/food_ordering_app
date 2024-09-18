@@ -29,6 +29,21 @@
         <section id="products">
             <!-- Product items will be dynamically inserted here -->
         </section>
+        <section id="orderDetails" style="display: none;">
+            <h2>Order Details</h2>
+            <p id="selectedFood">Selected Food: </p>
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter your name">
+            <label for="rollNumber">College Roll Number:</label>
+            <input type="text" id="rollNumber" placeholder="Enter your roll number">
+            <label for="department">Department:</label>
+            <input type="text" id="department" placeholder="Enter your department">
+            <button id="submitOrder">Submit Order</button>
+        </section>
+        <section id="confirmation" style="display: none;">
+            <h2>Order Confirmation</h2>
+            <p id="confirmationMessage"></p>
+        </section>
     </main>
     <script src="scripts.js"></script>
 </body>
