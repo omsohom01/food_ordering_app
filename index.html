@@ -10,7 +10,6 @@
             margin: 20px;
             display: flex;
             justify-content: space-between;
-            background-color: #f4f4f4;
         }
         .main-content {
             width: 75%;
@@ -63,7 +62,7 @@
         <h1>Order Your Food</h1>
 
         <div class="food-item" data-food="Burger" data-price="50">
-            <img src="images/burger.jpg" alt="Burger">
+            <img src="images/burger.jpeg" alt="Burger">
             <span>Burger</span>
             <button onclick="increaseQuantity(this)">+</button>
             <span class="quantity">0</span>
@@ -144,23 +143,7 @@
                 }
             });
 
-            fetch('/submit_order', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    order_summary: orderSummary,
-                    name: name,
-                    roll_number: rollNumber,
-                    department: department,
-                    total_price: totalPrice
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                displayOrderDetails(orderSummary, name, rollNumber, department, totalPrice);
-            });
+            displayOrderDetails(orderSummary, name, rollNumber, department, totalPrice);
         }
 
         function displayOrderDetails(summary, name, rollNumber, department, totalPrice) {
