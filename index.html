@@ -8,15 +8,6 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-        .main-content {
-            width: 75%;
-        }
-        .sidebar {
-            width: 20%;
-            text-align: center;
         }
         .food-item {
             display: flex;
@@ -40,80 +31,51 @@
             border: none;
             cursor: pointer;
         }
-        .hidden {
-            display: none;
-        }
-        #submitted-details {
-            margin-top: 20px;
-        }
-        #food-image {
-            margin-top: 20px;
-        }
-        .sidebar img {
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 <body>
 
-    <div class="main-content">
-        <h1>Order Your Food</h1>
+    <h1>Order Your Food</h1>
 
-        <div class="food-item" data-food="Burger" data-price="50">
-            <img src="images/burger.jpg" alt="Burger">
-            <span>Burger</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <div class="food-item" data-food="Chicken Roll" data-price="65">
-            <img src="images/chickenroll.jpg" alt="Chicken Roll">
-            <span>Chicken Roll</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <div class="food-item" data-food="Chowmin" data-price="55">
-            <img src="images/chowmin.jpg" alt="Chowmin">
-            <span>Chowmin</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <div class="food-item" data-food="Momo" data-price="45">
-            <img src="images/momo.jpg" alt="Momo">
-            <span>Momo</span>
-            <button onclick="increaseQuantity(this)">+</button>
-            <span class="quantity">0</span>
-        </div>
-
-        <h2>Enter Your Details</h2>
-        <label for="name">Name:</label>
-        <input type="text" id="name"><br><br>
-        
-        <label for="roll_number">College Roll Number:</label>
-        <input type="text" id="roll_number"><br><br>
-        
-        <label for="department">Department:</label>
-        <input type="text" id="department"><br><br>
-
-        <button class="btn" onclick="submitOrder()">Submit Order</button>
-
-        <div id="submitted-details" class="hidden">
-            <h2>Order Details</h2>
-            <p id="order-summary"></p>
-            <p id="user-details"></p>
-            <p id="bill"></p>
-            <img id="food-image" src="images/food.jpg" alt="Food">
-        </div>
+    <div class="food-item" data-food="Burger">
+        <img src="images/burger.jpg" alt="Burger">
+        <span>Burger</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
     </div>
 
-    <div class="sidebar">
-        <img src="images/rcciit.jpg" alt="RCCIIT">
-        <img src="images/canteen.jpg" alt="Canteen">
+    <div class="food-item" data-food="Chicken Roll">
+        <img src="images/chickenroll.jpg" alt="Chicken Roll">
+        <span>Chicken Roll</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
     </div>
+
+    <div class="food-item" data-food="Chowmin">
+        <img src="images/chowmin.jpg" alt="Chowmin">
+        <span>Chowmin</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
+    </div>
+
+    <div class="food-item" data-food="Momo">
+        <img src="images/momo.jpg" alt="Momo">
+        <span>Momo</span>
+        <button onclick="increaseQuantity(this)">+</button>
+        <span class="quantity">0</span>
+    </div>
+
+    <h2>Enter Your Details</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name" required><br><br>
+    
+    <label for="roll_number">College Roll Number:</label>
+    <input type="text" id="roll_number" required><br><br>
+    
+    <label for="department">Department:</label>
+    <input type="text" id="department" required><br><br>
+
+    <button class="btn" onclick="submitOrder()">Submit Order</button>
 
     <script>
         function increaseQuantity(button) {
@@ -129,36 +91,30 @@
             const rollNumber = document.getElementById('roll_number').value;
             const department = document.getElementById('department').value;
             
-            let orderSummary = '';
-            let totalPrice = 0;
-            
             foodItems.forEach(item => {
                 const foodName = item.getAttribute('data-food');
-                const price = parseInt(item.getAttribute('data-price'));
                 const quantity = parseInt(item.querySelector('.quantity').textContent);
 
                 if (quantity > 0) {
-                    totalPrice += price * quantity;
-                    orderSummary += `${quantity} x ${foodName} (₹${price} each)<br>`;
+                    fetch('/submit_order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            food_item: foodName,
+                            name: name,
+                            roll_number: rollNumber,
+                            department: department,
+                            quantity: quantity
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);  // Show confirmation message to the client
+                    });
                 }
             });
-
-            displayOrderDetails(orderSummary, name, rollNumber, department, totalPrice);
-        }
-
-        function displayOrderDetails(summary, name, rollNumber, department, totalPrice) {
-            document.querySelectorAll('.food-item').forEach(item => item.classList.add('hidden'));
-            document.querySelector('h2').classList.add('hidden');
-            document.querySelectorAll('input').forEach(input => input.classList.add('hidden'));
-            document.querySelector('.btn').classList.add('hidden');
-
-            document.getElementById('submitted-details').classList.remove('hidden');
-            document.getElementById('order-summary').innerHTML = `<strong>Order Summary:</strong><br>${summary}`;
-            document.getElementById('user-details').innerHTML = `
-                <strong>Name:</strong> ${name}<br>
-                <strong>Roll Number:</strong> ${rollNumber}<br>
-                <strong>Department:</strong> ${department}<br>`;
-            document.getElementById('bill').innerHTML = `<strong>Total Bill:</strong> ₹${totalPrice}/-`;
         }
     </script>
 
