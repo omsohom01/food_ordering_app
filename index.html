@@ -8,6 +8,15 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .main-content {
+            width: 75%;
+        }
+        .sidebar {
+            width: 20%;
+            text-align: center;
         }
         .food-item {
             display: flex;
@@ -31,51 +40,78 @@
             border: none;
             cursor: pointer;
         }
+        .hidden {
+            display: none;
+        }
+        #submitted-details {
+            margin-top: 20px;
+        }
+        #food-image {
+            margin-top: 20px;
+        }
+        .sidebar img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Order Your Food</h1>
+    <div class="main-content">
+        <h1>Order Your Food</h1>
 
-    <div class="food-item" data-food="Burger">
-        <img src="images/burger.jpeg" alt="Burger">
-        <span>Burger</span>
-        <button onclick="increaseQuantity(this)">+</button>
-        <span class="quantity">0</span>
+        <div class="food-item" data-food="Burger">
+            <img src="images/burger.jpeg" alt="Burger">
+            <span>Burger</span>
+            <button onclick="increaseQuantity(this)">+</button>
+            <span class="quantity">0</span>
+        </div>
+
+        <div class="food-item" data-food="Chicken Roll">
+            <img src="images/chickenroll.jpg" alt="Chicken Roll">
+            <span>Chicken Roll</span>
+            <button onclick="increaseQuantity(this)">+</button>
+            <span class="quantity">0</span>
+        </div>
+
+        <div class="food-item" data-food="Chowmin">
+            <img src="images/chowmin.jpg" alt="Chowmin">
+            <span>Chowmin</span>
+            <button onclick="increaseQuantity(this)">+</button>
+            <span class="quantity">0</span>
+        </div>
+
+        <div class="food-item" data-food="Momo">
+            <img src="images/momo.jpg" alt="Momo">
+            <span>Momo</span>
+            <button onclick="increaseQuantity(this)">+</button>
+            <span class="quantity">0</span>
+        </div>
+
+        <h2>Enter Your Details</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name"><br><br>
+        
+        <label for="roll_number">College Roll Number:</label>
+        <input type="text" id="roll_number"><br><br>
+        
+        <label for="department">Department:</label>
+        <input type="text" id="department"><br><br>
+
+        <button class="btn" onclick="submitOrder()">Submit Order</button>
+
+        <div id="submitted-details" class="hidden">
+            <h2>Order Details</h2>
+            <p id="order-summary"></p>
+            <img id="food-image" src="images/food.jpg" alt="Food">
+        </div>
     </div>
 
-    <div class="food-item" data-food="Chicken Roll">
-        <img src="images/chickenroll.jpg" alt="Chicken Roll">
-        <span>Chicken Roll</span>
-        <button onclick="increaseQuantity(this)">+</button>
-        <span class="quantity">0</span>
+    <div class="sidebar">
+        <img src="images/rcciit.jpg" alt="RCCIIT">
+        <img src="images/canteen.jpg" alt="Canteen">
     </div>
-
-    <div class="food-item" data-food="Chowmin">
-        <img src="images/chowmin.jpg" alt="Chowmin">
-        <span>Chowmin</span>
-        <button onclick="increaseQuantity(this)">+</button>
-        <span class="quantity">0</span>
-    </div>
-
-    <div class="food-item" data-food="Momo">
-        <img src="images/momo.jpg" alt="Momo">
-        <span>Momo</span>
-        <button onclick="increaseQuantity(this)">+</button>
-        <span class="quantity">0</span>
-    </div>
-
-    <h2>Enter Your Details</h2>
-    <label for="name">Name:</label>
-    <input type="text" id="name"><br><br>
-    
-    <label for="roll_number">College Roll Number:</label>
-    <input type="text" id="roll_number"><br><br>
-    
-    <label for="department">Department:</label>
-    <input type="text" id="department"><br><br>
-
-    <button class="btn" onclick="submitOrder()">Submit Order</button>
 
     <script>
         function increaseQuantity(button) {
@@ -91,6 +127,7 @@
             const rollNumber = document.getElementById('roll_number').value;
             const department = document.getElementById('department').value;
             
+            let orderSummary = '';
             foodItems.forEach(item => {
                 const foodName = item.getAttribute('data-food');
                 const quantity = parseInt(item.querySelector('.quantity').textContent);
@@ -111,10 +148,23 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        alert(data.message);  // Show confirmation message to the client
+                        orderSummary += `${data.message}<br>`;
+                        if (foodItems.length === Array.from(foodItems).filter(item => parseInt(item.querySelector('.quantity').textContent) > 0).length) {
+                            displayOrderDetails(orderSummary);
+                        }
                     });
                 }
             });
+        }
+
+        function displayOrderDetails(summary) {
+            document.querySelectorAll('.food-item').forEach(item => item.classList.add('hidden'));
+            document.querySelector('h2').classList.add('hidden');
+            document.querySelectorAll('input').forEach(input => input.classList.add('hidden'));
+            document.querySelector('.btn').classList.add('hidden');
+
+            document.getElementById('submitted-details').classList.remove('hidden');
+            document.getElementById('order-summary').innerHTML = summary;
         }
     </script>
 
