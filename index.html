@@ -137,7 +137,6 @@
             
             let orderSummary = '';
             let totalBill = 0;
-            const orders = [];
 
             foodItems.forEach(item => {
                 const foodName = item.getAttribute('data-food');
@@ -146,11 +145,6 @@
                 if (quantity > 0) {
                     const itemTotal = quantity * prices[foodName];
                     totalBill += itemTotal;
-                    orders.push({
-                        foodName: foodName,
-                        quantity: quantity,
-                        itemTotal: itemTotal
-                    });
                     orderSummary += `${quantity} ${foodName}(s) - Rs ${itemTotal}<br>`;
                 }
             });
