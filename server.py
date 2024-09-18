@@ -1,33 +1,42 @@
-from flask import Flask, send_from_directory, jsonify, request
-import os
+from flask import Flask, request, jsonify, render_template
 
 app = Flask(__name__)
 
-# Serve index.html from the root directory
+# Serve the index.html page
 @app.route('/')
 def index():
-    return send_from_directory('.', 'index.html')
+    return render_template('index.html')
 
-# Serve static images from the 'images' folder
-@app.route('/images/<filename>')
-def serve_image(filename):
-    return send_from_directory('images', filename)
-
-# Endpoint to handle order submissions
+# Handle the order submission
 @app.route('/submit_order', methods=['POST'])
 def submit_order():
+    # Extract order details from the request
     data = request.json
-    order_summary = data['order_summary']
-    name = data['name']
-    roll_number = data['roll_number']
-    department = data['department']
-    total_price = data['total_price']
+    name = data.get('name')
+    roll_number = data.get('roll_number')
+    department = data.get('department')
+    order_summary = data.get('order_summary')
+    total_price = data.get('total_price')
+    
+    # Format the message to be displayed
+    order_details = {
+        "name": name,
+        "roll_number": roll_number,
+        "department": department,
+        "order_summary": order_summary,
+        "total_price": total_price
+    }
 
-    response_message = f"Order Summary:<br>{order_summary}<br><strong>Name:</strong> {name}<br><strong>Roll Number:</strong> {roll_number}<br><strong>Department:</strong> {department}<br><strong>Total Bill:</strong> ₹{total_price}/-"
-    print(response_message)  # Server logs the order
-    return jsonify({"message": response_message})
+    # Log the order details to the server console
+    print("Order Details Received:")
+    print(f"Name: {name}")
+    print(f"Roll Number: {roll_number}")
+    print(f"Department: {department}")
+    print(f"Order Summary: {order_summary}")
+    print(f"Total Price: {total_price}")
+
+    # Pass the order details to the client-side
+    return jsonify(order_details)
 
 if __name__ == '__main__':
-    # Ensure the app listens on the port specified by Render
-    port = int(os.getenv('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(debug=True)
